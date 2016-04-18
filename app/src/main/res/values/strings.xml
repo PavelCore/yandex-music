@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">YandexMusicApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_singer_info">Singer</string>
+    <string name="biography">Биография</string>
+</resources>
