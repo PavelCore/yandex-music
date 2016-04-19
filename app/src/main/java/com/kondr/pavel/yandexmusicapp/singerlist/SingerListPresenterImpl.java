@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class SingerListPresenterImpl implements SingerListPresenter {
     }
 
     @Override
-    public void presentSingerList(List<Singer> singers) {
+    public void presentSingerList(ArrayList<Singer> singers) {
         view.hideRefresh();
         if (singers != null) {
             view.setContent(singers);

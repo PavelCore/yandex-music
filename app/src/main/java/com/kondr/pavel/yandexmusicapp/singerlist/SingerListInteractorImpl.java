@@ -27,7 +27,7 @@ public class SingerListInteractorImpl implements SingerListInteractor {
 
     public interface YandexService {
         @GET("/download.cdn.yandex.net/mobilization-2016/artists.json")
-        Call<List<Singer>> listSingers();
+        Call<ArrayList<Singer>> listSingers();
     }
 
     @Override
@@ -38,16 +38,16 @@ public class SingerListInteractorImpl implements SingerListInteractor {
                 .build();
 
         YandexService service = retrofit.create(YandexService.class);
-        Call<List<Singer>> call = service.listSingers();
+        Call<ArrayList<Singer>> call = service.listSingers();
 
-        call.enqueue(new Callback<List<Singer>>() {
+        call.enqueue(new Callback<ArrayList<Singer>>() {
             @Override
-            public void onResponse(Call<List<Singer>> call, Response<List<Singer>> response) {
+            public void onResponse(Call<ArrayList<Singer>> call, Response<ArrayList<Singer>> response) {
                 presenter.presentSingerList(response.body());
             }
 
             @Override
-            public void onFailure(Call<List<Singer>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Singer>> call, Throwable t) {
                 presenter.presentSingerList(null);
             }
 

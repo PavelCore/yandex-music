@@ -2,11 +2,12 @@ package com.kondr.pavel.yandexmusicapp.singerlist;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
 
 /**
  * Created by Pavel on 31.03.2016.
  */
-public class Singer implements Parcelable{
+public class Singer implements Parcelable {
 
     private int id;
     private String name;

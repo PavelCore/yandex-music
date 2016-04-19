@@ -3,6 +3,7 @@ package com.kondr.pavel.yandexmusicapp.singerlist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,11 +31,12 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
         SwipeRefreshLayout.OnRefreshListener {
 
     public final static String SINGER_INFO = "singer info";
+    public final static String STATE_SINGER_LIST = "singer list";
 
     private SingerListPresenter presenter;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Singer> singerList;
+    private ArrayList<Singer> singerList;
 
     @Bind(R.id.refresh_singer_list) SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.singer_list) RecyclerView mRecyclerView;
@@ -48,7 +50,14 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
 
         ButterKnife.bind(this);
 
-        singerList = new ArrayList<>();
+        presenter = new SingerListPresenterImpl(this);
+
+        if (savedInstanceState == null) {
+            singerList = new ArrayList<>();
+            presenter.refresh();
+        } else {
+            singerList = savedInstanceState.getParcelableArrayList(STATE_SINGER_LIST);
+        }
 
         mRecyclerView.setHasFixedSize(true);
 
@@ -61,15 +70,12 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        presenter = new SingerListPresenterImpl(this);
-        presenter.refresh();
-
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getApplicationContext(), SingerInfoActivity.class);
-                        intent.putExtra(SINGER_INFO, new Singer(singerList.get(position)));
+                        intent.putExtra(SINGER_INFO, singerList.get(position));
                         startActivity(intent);
                     }
                 })
@@ -101,6 +107,13 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(STATE_SINGER_LIST, singerList);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onRefresh() {
         showRefresh();
         presenter.refresh();
@@ -117,7 +130,7 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
     }
 
     @Override
-    public void setContent(List<Singer> content) {
+    public void setContent(ArrayList<Singer> content) {
         singerList.clear();
         for (Singer singer : content) {
             singerList.add(new Singer(singer));

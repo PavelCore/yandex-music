@@ -1,5 +1,6 @@
 package com.kondr.pavel.yandexmusicapp.singerlist;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,5 +10,5 @@ public interface SingerListPresenter {
 
     void refresh();
 
-    void presentSingerList(List<Singer> singers);
+    void presentSingerList(ArrayList<Singer> singers);
 }

@@ -27,6 +27,37 @@ public class SingerListAdapter extends RecyclerView.Adapter<SingerListAdapter.Vi
         this.singers = singers;
     }
 
+    private String getStuffText(int albums, int tracks) {
+        String albumsStr, tracksStr;
+        switch (albums % 10) {
+            case 1:
+                albumsStr = "альбом";
+                break;
+            case 2:
+            case 3:
+            case 4:
+                albumsStr = "альбома";
+                break;
+            default:
+                albumsStr = "альбомов";
+        }
+
+        switch (tracks % 10) {
+            case 1:
+                tracksStr = "песня";
+                break;
+            case 2:
+            case 3:
+            case 4:
+                tracksStr = "песни";
+                break;
+            default:
+                tracksStr = "песен";
+        }
+
+        return String.format("%d %s\n%d %s", albums, albumsStr, tracks, tracksStr);
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -36,13 +67,13 @@ public class SingerListAdapter extends RecyclerView.Adapter<SingerListAdapter.Vi
     }
 
 
-    //"http://avatars.yandex.net/get-music-content/dfc531f5.p.1080505/300x300"
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Singer singer = singers.get(i);
         Picasso.with(context).load(singer.getCover().getSmall())
                 .resize(120, 120).into(viewHolder.cover);
         viewHolder.name.setText(singer.getName());
+        viewHolder.stuffCount.setText(getStuffText(singer.getAlbums(), singer.getTracks()));
         viewHolder.genres.setText(Joiner.on(", ").join(singer.getGenres()));
     }
 
