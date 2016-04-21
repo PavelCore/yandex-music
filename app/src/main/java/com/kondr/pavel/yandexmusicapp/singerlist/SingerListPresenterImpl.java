@@ -24,6 +24,7 @@ public class SingerListPresenterImpl implements SingerListPresenter {
 
     @Override
     public void refresh() {
+        view.showRefresh();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -38,5 +39,17 @@ public class SingerListPresenterImpl implements SingerListPresenter {
         if (singers != null) {
             view.setContent(singers);
         }
+    }
+
+    @Override
+    public ArrayList<Singer> filter(ArrayList<Singer> singers, String searchQuery) {
+        searchQuery = searchQuery.toLowerCase();
+        ArrayList<Singer> filteredList = new ArrayList<>();
+        for (Singer singer : singers) {
+            if (singer.getName().toLowerCase().contains(searchQuery)) {
+                filteredList.add(singer);
+            }
+        }
+        return filteredList;
     }
 }

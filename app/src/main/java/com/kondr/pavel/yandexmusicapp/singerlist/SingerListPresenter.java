@@ -11,4 +11,6 @@ public interface SingerListPresenter {
     void refresh();
 
     void presentSingerList(ArrayList<Singer> singers);
+
+    ArrayList<Singer> filter(ArrayList<Singer> singers, String searchQuery);
 }
