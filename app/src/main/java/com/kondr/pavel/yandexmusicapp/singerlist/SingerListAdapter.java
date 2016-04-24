@@ -42,6 +42,7 @@ public class SingerListAdapter extends RecyclerView.Adapter<SingerListAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Singer singer = singers.get(i);
+        // this image size looks nice, just magic numbers :)
         Picasso.with(context).load(singer.getCover().getSmall())
                 .resize(120, 120).into(viewHolder.cover);
         viewHolder.name.setText(singer.getName());

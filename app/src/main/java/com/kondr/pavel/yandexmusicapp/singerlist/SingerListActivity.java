@@ -1,6 +1,8 @@
 package com.kondr.pavel.yandexmusicapp.singerlist;
 
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.kondr.pavel.yandexmusicapp.R;
 import com.kondr.pavel.yandexmusicapp.RecyclerItemClickListener;
+import com.kondr.pavel.yandexmusicapp.SingerListLoader;
 import com.kondr.pavel.yandexmusicapp.singerinfo.SingerInfoActivity;
 
 import java.util.ArrayList;
@@ -50,6 +53,7 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
         setContentView(R.layout.activity_singer_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle(R.string.title_activity_singer_list);
 
         ButterKnife.bind(this);
 
@@ -66,14 +70,19 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
         mAdapter = new SingerListAdapter(getApplicationContext(), singerList);
         mRecyclerView.setAdapter(mAdapter);
 
-
+        // SwipeRefreshLayout is used for nicer refresh animation
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        presenter = new SingerListPresenterImpl(this);
+        /* presenter is used to "hide" some functions and make a connection between
+        * view and model (i tried to implement an mvp pattern,
+        * see http://antonioleiva.com/mvp-android/)*/
+
+        presenter = new SingerListPresenterImpl(this, getLoaderManager());
         if (savedInstanceState == null) {
             presenter.refresh();
         }
 
+        // this listener handle touching objects of recyclerView
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -92,6 +101,8 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_singer_list, menu);
 
+
+        // setting search
         final MenuItem item = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -146,6 +157,10 @@ public class SingerListActivity extends AppCompatActivity implements SingerListV
 
     @Override
     public void setContent(ArrayList<Singer> content) {
+        /* singerList contains FULL list of singers, while list in adapter only
+        * singers we are searching for, so we need to not only update singerList,
+        * but also update list in adapter*/
+
         singerList.clear();
         for (Singer singer : content) {
             singerList.add(new Singer(singer));

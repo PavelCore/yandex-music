@@ -1,5 +1,8 @@
 package com.kondr.pavel.yandexmusicapp.singerlist;
 
+import android.app.LoaderManager;
+import android.content.Context;
+
 import java.util.List;
 
 /**

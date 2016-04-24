@@ -24,6 +24,10 @@ public class SingerInfoPresenterImpl implements SingerInfoPresenter {
     public void loadImage(String imageUrl, ImageView cover) {
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
 
+        // this transformation resizes picture to
+        // (min(screen width, screen height), min(screen width, screen height))
+        // so i can "put image in toolbar" in portrait orientation
+        // but in land if i zoom image to full width, it will look terrible
         Transformation transformation = new Transformation() {
 
             @Override
@@ -53,6 +57,8 @@ public class SingerInfoPresenterImpl implements SingerInfoPresenter {
                 .into(cover);
     }
 
+
+    // needed for correct display of the text
     @Override
     public void setStuffText(TextView stuff, int albums, int tracks) {
         String albumsStr, tracksStr;

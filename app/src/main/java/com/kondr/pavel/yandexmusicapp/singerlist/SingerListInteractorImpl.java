@@ -1,7 +1,14 @@
 package com.kondr.pavel.yandexmusicapp.singerlist;
 
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.Loader;
+import android.os.Bundle;
 import android.widget.TextView;
 
+import com.kondr.pavel.yandexmusicapp.SingerListLoader;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,40 +24,45 @@ import retrofit2.http.GET;
 /**
  * Created by Pavel on 31.03.2016.
  */
-public class SingerListInteractorImpl implements SingerListInteractor {
+public class SingerListInteractorImpl implements SingerListInteractor,
+        LoaderManager.LoaderCallbacks<ArrayList<Singer>> {
 
     final private SingerListPresenterImpl presenter;
+    final private Context context;
+    final private LoaderManager manager;
 
-    public SingerListInteractorImpl(SingerListPresenterImpl presenter) {
+    public SingerListInteractorImpl(SingerListPresenterImpl presenter,
+                                    Context context,
+                                    LoaderManager manager) {
         this.presenter = presenter;
+        this.context = context;
+        this.manager = manager;
     }
 
-    public interface YandexService {
-        @GET("/download.cdn.yandex.net/mobilization-2016/artists.json")
-        Call<ArrayList<Singer>> listSingers();
-    }
 
     @Override
     public void getSingerList() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://cache-default04d.cdn.yandex.net")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        /* Loaders are used for appropriate behavior in situations when user
+        * rotate his screen, but the answer has not yet been retrieved.
+        * Loaders correctly work in this situations and if loader with id=0 exists,
+        * we will re-connect an existing one */
 
-        YandexService service = retrofit.create(YandexService.class);
-        Call<ArrayList<Singer>> call = service.listSingers();
+        manager.initLoader(0, null, this);
+    }
 
-        call.enqueue(new Callback<ArrayList<Singer>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Singer>> call, Response<ArrayList<Singer>> response) {
-                presenter.presentSingerList(response.body());
-            }
+    @Override
+    public Loader<ArrayList<Singer>> onCreateLoader(int id, Bundle args) {
+        return new SingerListLoader(context);
+    }
 
-            @Override
-            public void onFailure(Call<ArrayList<Singer>> call, Throwable t) {
-                presenter.presentSingerList(null);
-            }
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Singer>> loader) {
+    }
 
-        });
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Singer>> loader, ArrayList<Singer> data) {
+        // show singerList to user
+        presenter.presentSingerList(data);
+        manager.destroyLoader(loader.getId());
     }
 }

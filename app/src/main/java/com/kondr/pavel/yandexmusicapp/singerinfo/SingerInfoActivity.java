@@ -66,6 +66,8 @@ public class SingerInfoActivity extends AppCompatActivity implements SingerInfoV
 
     @Override
     public void setContent() {
+        // in loadImage will be used some transformations, so i decided to let presenter
+        // work with this routine
         presenter.loadImage(singer.getCover().getBig(), cover);
         genres.setText(Joiner.on(", ").join(singer.getGenres()));
         presenter.setStuffText(stuff, singer.getAlbums(), singer.getTracks());

@@ -1,5 +1,7 @@
 package com.kondr.pavel.yandexmusicapp.singerlist;
 
+import android.app.LoaderManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,4 +15,5 @@ public interface SingerListView {
     void hideRefresh();
 
     void setContent(ArrayList<Singer> singers);
+
 }
