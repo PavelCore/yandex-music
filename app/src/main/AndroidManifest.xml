@@ -24,7 +24,8 @@
         <activity
             android:name=".singerinfo.SingerInfoActivity"
             android:label="@string/title_activity_singer_info"
-            android:parentActivityName=".singerlist.SingerListActivity">
+            android:parentActivityName=".singerlist.SingerListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kondr.pavel.yandexmusicapp.singerlist.SingerListActivity" />
